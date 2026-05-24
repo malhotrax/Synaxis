@@ -5,7 +5,6 @@ import com.synaxis.android.chatapp.core.common.resource.ErrorType
 import com.synaxis.android.chatapp.core.common.resource.MessageResponse
 import com.synaxis.android.chatapp.core.common.resource.flatmap
 import com.synaxis.android.chatapp.core.common.resource.safeApiCall
-import com.synaxis.android.chatapp.core.common.user.GetUser
 import com.synaxis.android.chatapp.core.common.user.User
 import com.synaxis.android.chatapp.core.network.connectivity.NetworkConnectivityManager
 import com.synaxis.android.chatapp.feature.user.data.mapper.toDomain
@@ -21,6 +20,11 @@ class UserRemoteDatasource @Inject constructor(
     private val userApi: UserApi,
     private val networkConnectivityManager: NetworkConnectivityManager
 ) {
+    suspend fun getCurrentUser() : ApiResult<User> {
+        return  safeApiCall {
+            userApi.getCurrentUser()
+        }
+    }
     suspend fun updateUsername(username: String): ApiResult<MessageResponse> {
         if (!networkConnectivityManager.isConnected()) {
             return ApiResult.error("Please connect to internet", errorType = ErrorType.NETWORK)

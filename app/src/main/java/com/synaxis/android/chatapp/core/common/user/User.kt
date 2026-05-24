@@ -11,4 +11,13 @@ data class User(
     val fullName: String?= null,
     val avatarUrl: String?= null,
     val createdAt: String
-)
+){
+    companion object{
+        fun getEmptyUser(): User = User(
+            id = "",
+            username = "",
+            email = "",
+            createdAt = ""
+        )
+    }
+}

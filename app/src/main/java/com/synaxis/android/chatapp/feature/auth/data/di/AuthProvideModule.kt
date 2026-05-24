@@ -1,6 +1,7 @@
 package com.synaxis.android.chatapp.feature.auth.data.di
 
 import com.synaxis.android.chatapp.core.datastore.session.SessionDatasource
+import com.synaxis.android.chatapp.di.PublicRetrofit
 import com.synaxis.android.chatapp.feature.auth.data.remote.api.AuthApi
 import com.synaxis.android.chatapp.feature.auth.domain.repository.AuthRepository
 import com.synaxis.android.chatapp.feature.auth.domain.use_case.AuthUseCase
@@ -19,7 +20,7 @@ object AuthProvideModule {
 
     @Provides
     @Singleton
-    fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+    fun provideAuthApi(@PublicRetrofit retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
 
     @Provides
     @Singleton

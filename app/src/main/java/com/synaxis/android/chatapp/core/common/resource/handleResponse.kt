@@ -19,7 +19,7 @@ fun <T> handleResponse(response: Response<T>): ApiResult<T> {
         401 -> {
             val serverMessage = parseServerMessage(response)
             ApiResult.error(
-                message = "Your session has expired. Please log in again ${serverMessage}.",
+                message = " ${serverMessage}.",
                 code = response.code(),
                 errorType = ErrorType.UNAUTHORIZED
             )

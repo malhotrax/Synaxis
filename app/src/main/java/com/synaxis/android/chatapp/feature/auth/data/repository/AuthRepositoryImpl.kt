@@ -5,7 +5,9 @@ import com.synaxis.android.chatapp.core.common.resource.ApiResult
 import com.synaxis.android.chatapp.core.datastore.session.SessionDatasource
 import com.synaxis.android.chatapp.feature.auth.data.remote.AuthRemoteDatasource
 import com.synaxis.android.chatapp.feature.auth.domain.model.RegisterUser
+import com.synaxis.android.chatapp.feature.auth.domain.model.Tokens
 import com.synaxis.android.chatapp.feature.auth.domain.repository.AuthRepository
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -21,10 +23,13 @@ class AuthRepositoryImpl @Inject constructor(
             is ApiResult.Error -> ApiResult.error(result.message, result.code, result.errorType)
             is ApiResult.Success -> {
                 sessionDatasource.saveUserId(result.data.user.id)
+
                 sessionDatasource.saveToken(
                     refreshToken = result.data.refreshToken,
                     accessToken = result.data.accessToken
                 )
+                val accessToken = sessionDatasource.accessToken().first { it != null}
+                Log.d("TOKEN_STORING",accessToken.toString())
                 ApiResult.empty()
             }
         }
@@ -41,6 +46,20 @@ class AuthRepositoryImpl @Inject constructor(
                     accessToken = result.data.accessToken
                 )
                 ApiResult.empty()
+            }
+        }
+    }
+
+    override suspend fun refreshTokens(refreshToken: String): ApiResult<Unit> {
+        return when( val result = authRemoteDatasource.refreshTokens(refreshToken)) {
+            ApiResult.Empty -> ApiResult.error()
+            is ApiResult.Error -> ApiResult.error(result.message,result.code,result.errorType)
+            is ApiResult.Success -> {
+                sessionDatasource.saveToken(
+                    refreshToken = result.data.refreshToken,
+                    accessToken = result.data.accessToken
+                )
+                ApiResult.success(Unit)
             }
         }
     }

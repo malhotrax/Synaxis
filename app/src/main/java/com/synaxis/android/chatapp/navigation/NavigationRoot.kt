@@ -1,71 +1,50 @@
 package com.synaxis.android.chatapp.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.synaxis.android.chatapp.feature.auth.presentation.login.LoginScreen
-import com.synaxis.android.chatapp.feature.auth.presentation.signup.SignUpScreen
-import com.synaxis.android.chatapp.feature.forget_password.ForgetPasswordScreen
-import com.synaxis.android.chatapp.feature.home.HomeScreen
-import com.synaxis.android.chatapp.feature.user.presentation.search.SearchScreen
-import com.synaxis.android.chatapp.feature.user.presentation.profile.update.full_name.UpdateFullName
-import com.synaxis.android.chatapp.feature.user.presentation.profile.update.username.UpdateUsername
 import com.synaxis.android.chatapp.navigation.route.Routes
 
 @Composable
 fun NavigationRoot() {
-    val backStack = rememberNavBackStack(Routes.Login)
+    val viewModel = hiltViewModel<NavigationRootVM>()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val backStack = rememberNavBackStack(Routes.Login)
+    LaunchedEffect(state.isLoggedIn) {
+        backStack.clear()
+        if(state.isLoggedIn) {
+            backStack.add(Routes.Home)
+        }else {
+            backStack.add(Routes.Login)
+        }
+    }
+    if(state.isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Waiting...")
+        }
+        return
+    }
     NavDisplay(
         backStack = backStack,
         onBack = {
             backStack.removeLastOrNull()
         },
         entryProvider = entryProvider {
-            entry<Routes.Home> {
-                HomeScreen(
-                    navigateToSearch = {
-                        backStack.add(Routes.Search)
-                    },
-                    navigateToUpdateUsername = {
-                        backStack.add(Routes.UpdateUsername)
-                    },
-                    navigateToUpdateFullName = {
-                        backStack.add(Routes.UpdateFullName)
-                    }
-                )
-            }
-            entry<Routes.ForgetPassword> { ForgetPasswordScreen() }
-            entry<Routes.Login> {
-                LoginScreen(
-                    navigateToHome = {
-                        backStack.clear()
-                        backStack.add(Routes.Home)
-                    },
-                    navigateToSignUp = {
-                        backStack.add(Routes.SignUp)
-                    },
-                    navigateToForgetPassword = {
-                        backStack.add(Routes.ForgetPassword)
-                    }
-                )
-            }
-            entry<Routes.SignUp> {
-                SignUpScreen(
-                    navigateToHome = {
-                        backStack.clear()
-                        backStack.add(Routes.Home)
-                    },
-                    navigateToLogin = {
-                        backStack.removeLastOrNull()
-                    }
-                )
-            }
 
-            entry<Routes.Search> { SearchScreen() }
-            entry<Routes.UpdateUsername> { UpdateUsername(navigateBack = { backStack.removeLastOrNull() }) }
-            entry<Routes.UpdateFullName> { UpdateFullName(navigateBack = { backStack.removeLastOrNull() }) }
         }
     )
 }

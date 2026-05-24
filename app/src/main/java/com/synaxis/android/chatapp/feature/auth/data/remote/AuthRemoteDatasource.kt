@@ -9,6 +9,8 @@ import com.synaxis.android.chatapp.feature.auth.data.mapper.toDomain
 import com.synaxis.android.chatapp.feature.auth.data.mapper.toDto
 import com.synaxis.android.chatapp.feature.auth.data.remote.api.AuthApi
 import com.synaxis.android.chatapp.feature.auth.data.remote.dto.LoginDto
+import com.synaxis.android.chatapp.feature.auth.data.remote.dto.RefreshTokenDto
+import com.synaxis.android.chatapp.feature.auth.data.remote.dto.TokensDto
 import com.synaxis.android.chatapp.feature.auth.domain.model.AuthUser
 import com.synaxis.android.chatapp.feature.auth.domain.model.RegisterUser
 import javax.inject.Inject
@@ -18,9 +20,9 @@ class AuthRemoteDatasource  @Inject constructor(
     private val networkConnectivityManager: NetworkConnectivityManager
 ) {
     suspend fun login(email: String, password: String) : ApiResult<AuthUser> {
-//        if(!networkConnectivityManager.isConnected()) {
-//            return ApiResult.error(message = "Please connect to the internet", errorType = ErrorType.NETWORK )
-//        }
+        if(!networkConnectivityManager.isConnected()) {
+            return ApiResult.error(message = "Please connect to the internet", errorType = ErrorType.NETWORK )
+        }
         return safeApiCall {
             authApi.login(LoginDto(email = email, password = password))
         }.flatmap { authUserDto ->  authUserDto.toDomain() }
@@ -32,5 +34,10 @@ class AuthRemoteDatasource  @Inject constructor(
         return safeApiCall {
             authApi.register(registerUser.toDto())
         }.flatmap { authUserDto -> authUserDto.toDomain()}
+    }
+    suspend fun refreshTokens(refreshToken: String): ApiResult<TokensDto> {
+        return safeApiCall {
+            authApi.refreshTokens(RefreshTokenDto(refreshToken))
+        }
     }
 }

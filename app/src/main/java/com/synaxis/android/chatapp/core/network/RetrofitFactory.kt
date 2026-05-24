@@ -11,12 +11,15 @@ object RetrofitFactory {
     fun getBaseUrl(): String = BASE_URL
     fun create(
         json: Json,
-        httpClient: OkHttpClient
+        httpClient: OkHttpClient? = null
     ): Retrofit {
-        return Retrofit.Builder()
+        val builder = Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(httpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        httpClient?.let { client ->
+            builder.client(client)
+        }
+
+        return builder.build()
     }
 }

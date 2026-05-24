@@ -1,6 +1,7 @@
 package com.synaxis.android.chatapp.feature.user.data.remote.api
 
 import com.synaxis.android.chatapp.core.common.resource.MessageResponse
+import com.synaxis.android.chatapp.core.common.user.User
 import com.synaxis.android.chatapp.feature.user.data.remote.dto.GetUserResponseDto
 import com.synaxis.android.chatapp.feature.user.data.remote.dto.UpdateAvatarUrlReq
 import com.synaxis.android.chatapp.feature.user.data.remote.dto.UpdateFullNameReq
@@ -16,6 +17,8 @@ import retrofit2.http.Query
 
 interface UserApi {
 
+    @GET("user")
+    suspend fun getCurrentUser(): Response<User>
     @PATCH("user/update/username")
     suspend fun updateUsername(@Body updateUsernameReq: UpdateUsernameReq): Response<MessageResponse>
 

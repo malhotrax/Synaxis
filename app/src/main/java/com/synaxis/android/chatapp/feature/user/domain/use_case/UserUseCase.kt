@@ -6,5 +6,6 @@ data class UserUseCase(
     val updateUsername: UpdateUsername,
     val updateFullName: UpdateFullName,
     val updateAvatarUrl: UpdateAvatarUrl,
-    val searchUser: SearchUser
+    val searchUser: SearchUser,
+    val getCurrentUser: GetCurrentUser
 )

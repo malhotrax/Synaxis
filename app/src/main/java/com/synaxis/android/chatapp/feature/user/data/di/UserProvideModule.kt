@@ -1,8 +1,10 @@
 package com.synaxis.android.chatapp.feature.user.data.di
 
+import com.synaxis.android.chatapp.di.AuthRetrofit
 import com.synaxis.android.chatapp.feature.user.data.remote.api.UserApi
 import com.synaxis.android.chatapp.feature.user.domain.repository.UserRepository
 import com.synaxis.android.chatapp.feature.user.domain.use_case.DeleteAccount
+import com.synaxis.android.chatapp.feature.user.domain.use_case.GetCurrentUser
 import com.synaxis.android.chatapp.feature.user.domain.use_case.Logout
 import com.synaxis.android.chatapp.feature.user.domain.use_case.SearchUser
 import com.synaxis.android.chatapp.feature.user.domain.use_case.UpdateAvatarUrl
@@ -22,7 +24,7 @@ object UserProvideModule {
 
     @Provides
     @Singleton
-    fun provideUserApi(retrofit: Retrofit): UserApi = retrofit.create(UserApi::class.java)
+    fun provideUserApi(@AuthRetrofit retrofit: Retrofit): UserApi = retrofit.create(UserApi::class.java)
 
     @Provides
     @Singleton
@@ -34,6 +36,7 @@ object UserProvideModule {
         updateUsername = UpdateUsername(userRepository),
         updateFullName = UpdateFullName(userRepository),
         updateAvatarUrl = UpdateAvatarUrl(userRepository),
-        searchUser = SearchUser(userRepository)
+        searchUser = SearchUser(userRepository),
+        getCurrentUser = GetCurrentUser(userRepository)
     )
 }
