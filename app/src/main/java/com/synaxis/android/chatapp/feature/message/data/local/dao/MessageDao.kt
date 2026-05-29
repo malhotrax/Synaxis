@@ -20,6 +20,6 @@ interface MessageDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM messages")
-    fun getMessages(): PagingSource<String, MessageEntity>
+    fun getMessages(): PagingSource<Int, MessageEntity>
 
 }

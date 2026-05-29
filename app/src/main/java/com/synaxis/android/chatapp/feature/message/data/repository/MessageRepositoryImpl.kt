@@ -7,7 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.synaxis.android.chatapp.core.database.AppDatabase
 import com.synaxis.android.chatapp.core.database.remote_keys.RemoteKeysDao
-import com.synaxis.android.chatapp.feature.message.data.MessageRemoteMediator
+import com.synaxis.android.chatapp.feature.message.data.mediator.MessageRemoteMediator
 import com.synaxis.android.chatapp.feature.message.data.local.dao.MessageDao
 import com.synaxis.android.chatapp.feature.message.data.mapper.toDomain
 import com.synaxis.android.chatapp.feature.message.data.remote.MessageRemoteDatasource

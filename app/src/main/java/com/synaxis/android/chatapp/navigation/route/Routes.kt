@@ -6,7 +6,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Routes: NavKey {
 
+    @Serializable
+    object Friends: Routes()
 
+    @Serializable
+    object Chats : Routes()
+
+    @Serializable
+    object Profile: Routes()
     @Serializable
     object UpdateUsername: Routes()
 

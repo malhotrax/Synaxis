@@ -43,9 +43,9 @@ class FriendsRemoteDatasource @Inject constructor(
             friendsApi.deleteFriendRequest(id)
         }
     }
-    suspend fun getFriends(): ApiResult<PagingResponse<FriendEntity>> {
+    suspend fun getFriends(cursor: String?, limit: Int): ApiResult<PagingResponse<FriendEntity>> {
         return safeApiCall {
-            friendsApi.getFriends()
+            friendsApi.getFriends(cursor, limit)
         }.flatmap { pagingResponse ->
             PagingResponse(
                 items = pagingResponse.items.map { it.toEntity() },

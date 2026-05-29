@@ -18,4 +18,7 @@ interface RemoteKeysDao {
 
     suspend fun getRemoteKeyForItem(itemId: String): RemoteKeys?
 
+    @Query("SELECT * FROM remote_keys")
+    suspend fun getRemoteKeys(): List<RemoteKeys>
+
 }

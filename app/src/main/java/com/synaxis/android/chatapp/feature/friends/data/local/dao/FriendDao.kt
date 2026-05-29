@@ -18,7 +18,7 @@ interface FriendDao {
     suspend fun insert(friend: FriendEntity)
 
     @Query("SELECT * FROM friends ORDER BY created_at DESC ")
-    fun getFriends(): PagingSource<String, FriendEntity>
+    fun getFriends(): PagingSource<Int, FriendEntity>
 
     @Query("DELETE FROM friends WHERE id = :id")
     suspend fun removeFriend(id: String)

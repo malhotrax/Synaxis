@@ -27,7 +27,7 @@ class FriendsRemoteMediator @Inject constructor(
         cursor: String?,
         limit: Int
     ): ApiResult<PagingResponse<FriendEntity>> {
-        return friendsRemoteDatasource.getFriends()
+        return friendsRemoteDatasource.getFriends(cursor, limit)
     }
 
     override fun entityId(entity: FriendEntity): String = entity.id

@@ -2,11 +2,10 @@ package com.synaxis.android.chatapp.core.common.resource
 
 import java.io.IOException
 import java.net.ConnectException
-import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-fun<T> handleException(exception: Exception): ApiResult<T> {
+fun <T> handleException(exception: Exception): ApiResult<T> {
     return when(exception) {
         is ConnectException -> {
             ApiResult.error(
@@ -20,7 +19,7 @@ fun<T> handleException(exception: Exception): ApiResult<T> {
                 errorType = ErrorType.NETWORK
             )
         }
-        is SocketTimeoutException-> {
+        is SocketTimeoutException -> {
             ApiResult.error(
                 message = "Server taking too long to respond. Please check your connection and try again",
                 errorType = ErrorType.TIMEOUT

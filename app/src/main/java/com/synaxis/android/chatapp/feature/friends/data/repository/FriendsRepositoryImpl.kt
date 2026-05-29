@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.withTransaction
+import com.synaxis.android.chatapp.core.common.network.FriendRequest
 import com.synaxis.android.chatapp.core.common.network.GetFriendRequestsResponse
 import com.synaxis.android.chatapp.core.common.resource.ApiResult
 import com.synaxis.android.chatapp.core.common.resource.MessageResponse

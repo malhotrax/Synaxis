@@ -1,6 +1,7 @@
 package com.synaxis.android.chatapp.core.common.network
 
 import com.synaxis.android.chatapp.core.common.user.GetUser
+import com.synaxis.android.chatapp.feature.friends.data.local.entity.FriendEntity
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 
@@ -13,7 +14,6 @@ data class FriendRequest(
     val createdAt: Instant,
     val sender: GetUser
 )
-
 
 
 enum class FriendRequestStatus {

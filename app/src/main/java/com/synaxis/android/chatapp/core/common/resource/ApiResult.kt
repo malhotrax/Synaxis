@@ -1,5 +1,6 @@
 package com.synaxis.android.chatapp.core.common.resource
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 

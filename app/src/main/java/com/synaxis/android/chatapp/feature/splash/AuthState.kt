@@ -1,4 +1,4 @@
-package com.synaxis.android.chatapp.navigation
+package com.synaxis.android.chatapp.feature.splash
 
 data class AuthState(
     val isLoggedIn: Boolean = false,

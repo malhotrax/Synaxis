@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.synaxis.android.chatapp.navigation.App
 import com.synaxis.android.chatapp.navigation.NavigationRoot
 import com.synaxis.android.chatapp.ui.theme.SynaxisTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SynaxisTheme {
-                NavigationRoot()
+                App()
             }
         }
     }

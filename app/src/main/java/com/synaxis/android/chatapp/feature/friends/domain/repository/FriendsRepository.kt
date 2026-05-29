@@ -1,6 +1,7 @@
 package com.synaxis.android.chatapp.feature.friends.domain.repository
 
 import androidx.paging.PagingData
+import com.synaxis.android.chatapp.core.common.network.FriendRequest
 import com.synaxis.android.chatapp.core.common.network.GetFriendRequestsResponse
 import com.synaxis.android.chatapp.core.common.network.GetFriendResponse
 import com.synaxis.android.chatapp.core.common.resource.ApiResult

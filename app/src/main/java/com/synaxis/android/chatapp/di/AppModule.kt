@@ -28,7 +28,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideAppLocalDatabase(@ApplicationContext context: Context): RoomDatabase = Room.databaseBuilder(
+    fun provideAppLocalDatabase(@ApplicationContext context: Context): AppDatabase = Room.databaseBuilder(
         context,
         AppDatabase::class.java,
         "local_database",

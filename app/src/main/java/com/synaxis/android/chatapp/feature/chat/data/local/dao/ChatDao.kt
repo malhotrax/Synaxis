@@ -24,6 +24,6 @@ interface ChatDao {
     suspend fun deleteById(id: String)
 
     @Query("SELECT * FROM chat_table ORDER BY created_at DESC")
-    fun getChats(): PagingSource<String, ChatEntity>
+    fun getChats(): PagingSource<Int, ChatEntity>
 
 }
