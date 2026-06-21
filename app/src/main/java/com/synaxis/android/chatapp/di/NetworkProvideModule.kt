@@ -4,6 +4,7 @@ import com.synaxis.android.chatapp.core.network.HttpClientFactory
 import com.synaxis.android.chatapp.core.network.RetrofitFactory
 import com.synaxis.android.chatapp.core.network.interceptor.AuthInterceptor
 import com.synaxis.android.chatapp.core.network.interceptor.TokenAuthenticator
+import com.synaxis.android.chatapp.core.socket.SocketManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +17,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkProvideModule {
-
+    private const val BASE_URL = "http://192.168.31.228:3000"
+    private const val HTTP_URL = "$BASE_URL/api/v1/"
     @Provides
     @Singleton
     fun provideJson(): Json = Json {
@@ -24,6 +26,7 @@ object NetworkProvideModule {
         isLenient = true
         encodeDefaults = true
         prettyPrint = true
+        coerceInputValues = true
     }
 
     @Provides
@@ -42,12 +45,19 @@ object NetworkProvideModule {
     fun provideAuthRetrofitClient(
         json: Json,
         httpClient: OkHttpClient
-    ): Retrofit = RetrofitFactory.create(json = json, httpClient = httpClient)
+    ): Retrofit = RetrofitFactory.create(HTTP_URL,json = json, httpClient = httpClient)
 
     @Provides
     @Singleton
     @PublicRetrofit
     fun providePublicRetrofit(
         json: Json
-    ): Retrofit = RetrofitFactory.create(json)
+    ): Retrofit = RetrofitFactory.create(HTTP_URL,json)
+
+
+    @Provides
+    @Singleton
+    fun provideSocketManager(
+        json: Json
+    ): SocketManager = SocketManager(BASE_URL,json)
 }

@@ -36,11 +36,11 @@ fun BottomNavigation(
 ) {
     Row(
         modifier = modifier
+            .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             .height(70.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(30.dp))
             .shadow(5.dp, RoundedCornerShape(30.dp))
+            .clip(RoundedCornerShape(30.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .border(width = 0.5.dp, color = MaterialTheme.colorScheme.surfaceContainerHighest,RoundedCornerShape(30.dp)),
         verticalAlignment = Alignment.CenterVertically,

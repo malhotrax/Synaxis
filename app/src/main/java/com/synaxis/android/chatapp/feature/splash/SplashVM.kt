@@ -8,12 +8,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashVM @Inject constructor(
     private val sessionDatasource: SessionDatasource
 ) : ViewModel() {
+
 
     val state: StateFlow<AuthState> = sessionDatasource.accessToken()
         .map { token ->
@@ -24,4 +26,5 @@ class SplashVM @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = AuthState(isLoading = true)
         )
+
 }

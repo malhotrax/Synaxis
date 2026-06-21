@@ -11,6 +11,7 @@ object DateTimeUtil {
 
    fun String.isoToMillis(): Long = Instant.parse(this).toEpochMilli()
 
+
    fun Long.toIso(): String = Instant.ofEpochMilli(this).toString()
 
 }

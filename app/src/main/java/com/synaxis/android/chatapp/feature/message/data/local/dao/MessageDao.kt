@@ -19,7 +19,16 @@ interface MessageDao {
     @Query("DELETE FROM messages")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM messages")
-    fun getMessages(): PagingSource<Int, MessageEntity>
+    @Query("SELECT * FROM messages WHERE chat_id = :chatId ORDER BY created_at DESC")
+    fun getMessages(chatId: String): PagingSource<Int, MessageEntity>
+
+    @Query("SELECT * FROM messages WHERE id = :id")
+    fun getMessageById(id: String): MessageEntity?
+
+    @Query("DELETE FROM messages WHERE id = :id")
+    suspend fun deleteById(id: String)
+
+    @Query("UPDATE messages SET text = :content AND updated_at = :updatedAt WHERE id = :id ")
+    suspend fun updateMessageById(id:String, content: String, updatedAt: String)
 
 }

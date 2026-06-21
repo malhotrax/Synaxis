@@ -1,5 +1,6 @@
 package com.synaxis.android.chatapp.feature.friends.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -67,7 +68,20 @@ class FriendsVM @Inject constructor(
             }
         }
     }
-    private fun onOpenChat(userId: String) {}
+    private fun onOpenChat(userId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            when(val result = chatUseCase.createChat(userId)) {
+                ApiResult.Empty -> _state.update { it.copy(error = "Something went wrong", isLoading = false) }
+                is ApiResult.Error -> _state.update { it.copy(error = result.message, isLoading = false) }
+                is ApiResult.Success -> {
+                    val chat = result.data
+                    _state.update { it.copy(isLoading = false) }
+                    sendUiEvent(FriendsUiEvent.NavigateToConversation(chat))
+                }
+            }
+        }
+    }
 
     private fun onLoadFriendRequest() {
         viewModelScope.launch {
@@ -88,6 +102,8 @@ class FriendsVM @Inject constructor(
     }
 
     private fun onAcceptRequest(id: String) {
+        val updatedRequests = _state.value.requests.filter { it.id != id }
+        _state.update { it.copy(requests = updatedRequests) }
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             val result = friendsUseCases.acceptFriendRequest(id)
@@ -100,6 +116,8 @@ class FriendsVM @Inject constructor(
         }
     }
     private fun onRejectRequest(id: String) {
+        val updatedRequests = _state.value.requests.filter { it.id != id }
+        _state.update { it.copy(requests = updatedRequests) }
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             val result = friendsUseCases.rejectFriendRequest(id)

@@ -10,13 +10,19 @@ import com.synaxis.android.chatapp.feature.chat.data.local.dao.ChatDao
 import com.synaxis.android.chatapp.feature.chat.data.local.entity.ChatEntity
 import com.synaxis.android.chatapp.feature.friends.data.local.dao.FriendDao
 import com.synaxis.android.chatapp.feature.friends.data.local.entity.FriendEntity
+import com.synaxis.android.chatapp.feature.message.data.local.dao.MessageDao
+import com.synaxis.android.chatapp.feature.message.data.local.entity.MessageEntity
+import com.synaxis.android.chatapp.feature.user.data.local.dao.UserDao
+import com.synaxis.android.chatapp.feature.user.data.local.entity.UserEntity
 
 
 @Database(
     entities = [
         ChatEntity::class,
         RemoteKeys::class,
-        FriendEntity::class
+        FriendEntity::class,
+        UserEntity::class,
+        MessageEntity::class
     ], exportSchema = false, version = 1
 )
 @TypeConverters(Converters::class)
@@ -24,4 +30,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun chatDao(): ChatDao
     abstract fun remoteKeyDao() : RemoteKeysDao
     abstract fun friendDao() : FriendDao
+    abstract fun userDao(): UserDao
+    abstract fun messageDao(): MessageDao
+    fun clearAllData() {
+        clearAllTables()
+    }
 }

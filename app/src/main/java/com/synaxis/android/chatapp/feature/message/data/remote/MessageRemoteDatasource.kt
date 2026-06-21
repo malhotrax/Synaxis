@@ -15,11 +15,13 @@ class MessageRemoteDatasource @Inject constructor(
     private val messageApi: MessageApi
 ) {
     suspend fun getMessages(
+        chatId: String,
         cursor: String?,
         limit: Int = 10
     ): ApiResult<PagingResponse<MessageEntity>> {
         return safeApiCall {
             messageApi.getMessages(
+                chatId = chatId,
                 cursor = cursor,
                 limit = limit
             )

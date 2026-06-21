@@ -6,12 +6,14 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.ChatBubble
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.ChatBubble
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,6 +36,12 @@ enum class PrimaryTabs(
         selectedIcon = Icons.Filled.People,
         unselectedIcon = Icons.Outlined.People,
         route = Routes.Friends
+    ),
+    SEARCH(
+        title = "Search",
+        selectedIcon = Icons.Filled.Search,
+        unselectedIcon = Icons.Outlined.Search,
+        route = Routes.Search
     ),
     PROFILE(
         title = "Settings",

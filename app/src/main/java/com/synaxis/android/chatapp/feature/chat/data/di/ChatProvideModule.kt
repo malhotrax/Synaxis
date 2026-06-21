@@ -5,6 +5,7 @@ import com.synaxis.android.chatapp.di.AuthRetrofit
 import com.synaxis.android.chatapp.feature.chat.data.local.dao.ChatDao
 import com.synaxis.android.chatapp.feature.chat.data.remote.api.ChatApi
 import com.synaxis.android.chatapp.feature.chat.domain.repository.ChatRepository
+import com.synaxis.android.chatapp.feature.chat.domain.use_case.ChatExists
 import com.synaxis.android.chatapp.feature.chat.domain.use_case.ChatUseCase
 import com.synaxis.android.chatapp.feature.chat.domain.use_case.CreateChat
 import com.synaxis.android.chatapp.feature.chat.domain.use_case.GetChats
@@ -33,7 +34,8 @@ object ChatProvideModule {
         chatRepository: ChatRepository
     ): ChatUseCase = ChatUseCase(
         getChats = GetChats(chatRepository),
-        createChat = CreateChat(chatRepository)
+        createChat = CreateChat(chatRepository),
+        chatExists = ChatExists(chatRepository)
     )
 
 }

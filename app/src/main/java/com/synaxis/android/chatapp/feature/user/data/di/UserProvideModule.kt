@@ -1,6 +1,8 @@
 package com.synaxis.android.chatapp.feature.user.data.di
 
+import com.synaxis.android.chatapp.core.database.AppDatabase
 import com.synaxis.android.chatapp.di.AuthRetrofit
+import com.synaxis.android.chatapp.feature.user.data.local.dao.UserDao
 import com.synaxis.android.chatapp.feature.user.data.remote.api.UserApi
 import com.synaxis.android.chatapp.feature.user.domain.repository.UserRepository
 import com.synaxis.android.chatapp.feature.user.domain.use_case.DeleteAccount
@@ -21,6 +23,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object UserProvideModule {
+
+    @Provides
+    @Singleton
+    fun provideUserDao(appDatabase: AppDatabase): UserDao = appDatabase.userDao()
 
     @Provides
     @Singleton

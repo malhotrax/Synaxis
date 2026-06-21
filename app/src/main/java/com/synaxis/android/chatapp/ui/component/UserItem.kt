@@ -34,11 +34,13 @@ fun UserItem(
     username: String,
     modifier: Modifier = Modifier,
     fullName: String? = null,
-    avatar: String? = null
+    avatar: String? = null,
+    action: () -> Unit
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface
+        color = MaterialTheme.colorScheme.surface,
+        onClick = action
     ) {
         Row(
             modifier = Modifier
@@ -120,7 +122,8 @@ private fun UserItemWithNamePreview() {
         UserItem(
             username = "alex_w",
             fullName = "Alex Walker",
-            avatar = null // Forces initial badge fallback
+            avatar = null, // Forces initial badge fallback
+            action = {}
         )
     }
 }
@@ -132,7 +135,8 @@ private fun UserItemUsernameOnlyPreview() {
         UserItem(
             username = "sarah_m",
             fullName = null,
-            avatar = null
+            avatar = null,
+            action = {}
         )
     }
 }
@@ -144,7 +148,8 @@ private fun UserItemWithAvatarPreview() {
         UserItem(
             username = "david_k",
             fullName = "David Knight",
-            avatar = "https://example.com/avatar.jpg"
+            avatar = "https://example.com/avatar.jpg",
+            action = {}
         )
     }
 }

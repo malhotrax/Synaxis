@@ -13,6 +13,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +29,7 @@ import com.synaxis.android.chatapp.core.common.user.GetUser
 import com.synaxis.android.chatapp.feature.friends.domain.model.Friend
 import com.synaxis.android.chatapp.feature.friends.presentation.FriendsEvent
 import com.synaxis.android.chatapp.ui.component.ErrorScreen
+import com.synaxis.android.chatapp.ui.component.SwipeableSnackBar
 import com.synaxis.android.chatapp.ui.component.UserItem
 import kotlinx.coroutines.flow.flowOf
 import java.time.Instant
@@ -36,11 +40,16 @@ fun AllFriends(
     friends: LazyPagingItems<Friend>,
     onEvent: (FriendsEvent) -> Unit,
 ) {
-
-    val context = LocalContext.current
     val refreshState = friends.loadState.refresh
     val appendState = friends.loadState.append
     val isRefreshing = refreshState is LoadState.Loading
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(refreshState) {
+        if(refreshState is LoadState.Error) {
+            snackBarHostState.showSnackbar(refreshState.error.message ?: "Something went wrong")
+        }
+    }
 
     Box(
         modifier = modifier
@@ -63,20 +72,19 @@ fun AllFriends(
                         UserItem(
                             username = it.username,
                             fullName = it.fullName,
-                            avatar = it.avatarUrl
+                            avatar = it.avatarUrl,
+                            action = {
+                                onEvent(FriendsEvent.OpenChat(it.id))
+                            }
                         )
                     }
                 }
             }
-            if(refreshState is LoadState.Error) {
-                val message = refreshState.error.message ?: "Something went wrong"
-                Toast.makeText(context, message,Toast.LENGTH_SHORT,).show()
-            }
-            if(appendState is LoadState.Error) {
-                val message = appendState.error.message ?: "Something went wrong"
-                Toast.makeText(context, message,Toast.LENGTH_SHORT,).show()
-            }
         }
+        SwipeableSnackBar(
+            hostState = snackBarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

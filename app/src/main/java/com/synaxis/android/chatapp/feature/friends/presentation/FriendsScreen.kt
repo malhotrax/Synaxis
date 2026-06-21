@@ -1,5 +1,6 @@
 package com.synaxis.android.chatapp.feature.friends.presentation
 
+import android.widget.Toast
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -19,7 +20,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,9 +44,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.synaxis.android.chatapp.feature.chat.domain.model.Chat
 import com.synaxis.android.chatapp.feature.friends.domain.model.Friend
 import com.synaxis.android.chatapp.feature.friends.presentation.component.AllFriends
-import com.synaxis.android.chatapp.feature.friends.presentation.component.Header
+import com.synaxis.android.chatapp.ui.component.Header
 import com.synaxis.android.chatapp.feature.friends.presentation.component.Pending
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -54,8 +56,17 @@ import kotlin.enums.EnumEntries
 @Composable
 fun FriendsScreen(
     modifier: Modifier = Modifier,
-    viewModel: FriendsVM = hiltViewModel()
+    viewModel: FriendsVM = hiltViewModel(),
+    navigateToConversation: (Chat) -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.uiState.collect { e->
+            when(e) {
+                is FriendsUiEvent.NavigateToConversation -> navigateToConversation(e.chat)
+                is FriendsUiEvent.ShowSnackBar -> {}
+            }
+        }
+    }
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val friends = viewModel.friends.collectAsLazyPagingItems()
@@ -104,6 +115,9 @@ internal fun FriendsScreen(
                     state = state
                 )
             }
+        }
+        if(!state.error.isNullOrEmpty()) {
+            Toast.makeText(LocalContext.current,state.error, Toast.LENGTH_SHORT).show()
         }
     }
 }

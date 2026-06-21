@@ -15,6 +15,7 @@ import javax.inject.Singleton
 
 @Singleton
 class MessageRemoteMediator @Inject constructor(
+    private val chatId: String,
     private val appDatabase: AppDatabase,
     private val remoteKeysDao: RemoteKeysDao,
     private val messageDao: MessageDao,
@@ -27,7 +28,7 @@ class MessageRemoteMediator @Inject constructor(
     override suspend fun fetch(
         cursor: String?, limit: Int
     ): ApiResult<PagingResponse<MessageEntity>> {
-        return messageRemoteDatasource.getMessages(cursor, limit)
+        return messageRemoteDatasource.getMessages(chatId,cursor, limit)
     }
 
     override fun entityId(entity: MessageEntity): String = entity.id

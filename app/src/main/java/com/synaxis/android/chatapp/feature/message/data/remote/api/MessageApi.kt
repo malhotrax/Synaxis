@@ -11,6 +11,7 @@ interface MessageApi {
 
     @GET("message")
     suspend fun getMessages(
+        @Query("chatId") chatId: String,
         @Query("cursor") cursor: String?,
         @Query("limit") limit: Int
     ): Response<PagingResponse<MessageDto>>

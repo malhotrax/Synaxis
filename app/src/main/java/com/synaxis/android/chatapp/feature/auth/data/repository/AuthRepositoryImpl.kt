@@ -7,12 +7,15 @@ import com.synaxis.android.chatapp.feature.auth.data.remote.AuthRemoteDatasource
 import com.synaxis.android.chatapp.feature.auth.domain.model.RegisterUser
 import com.synaxis.android.chatapp.feature.auth.domain.model.Tokens
 import com.synaxis.android.chatapp.feature.auth.domain.repository.AuthRepository
+import com.synaxis.android.chatapp.feature.user.data.local.dao.UserDao
+import com.synaxis.android.chatapp.feature.user.data.mapper.toEntity
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authRemoteDatasource: AuthRemoteDatasource,
-    private val sessionDatasource: SessionDatasource
+    private val sessionDatasource: SessionDatasource,
+    private val userDao: UserDao
 ) : AuthRepository {
     override suspend fun login(
         email: String,
@@ -22,8 +25,8 @@ class AuthRepositoryImpl @Inject constructor(
             ApiResult.Empty -> ApiResult.empty()
             is ApiResult.Error -> ApiResult.error(result.message, result.code, result.errorType)
             is ApiResult.Success -> {
+                userDao.insert(result.data.user.toEntity())
                 sessionDatasource.saveUserId(result.data.user.id)
-
                 sessionDatasource.saveToken(
                     refreshToken = result.data.refreshToken,
                     accessToken = result.data.accessToken
@@ -40,6 +43,7 @@ class AuthRepositoryImpl @Inject constructor(
             ApiResult.Empty -> ApiResult.empty()
             is ApiResult.Error -> ApiResult.error(result.message, result.code, result.errorType)
             is ApiResult.Success -> {
+                userDao.insert(result.data.user.toEntity())
                 sessionDatasource.saveUserId(result.data.user.id)
                 sessionDatasource.saveToken(
                     refreshToken = result.data.refreshToken,

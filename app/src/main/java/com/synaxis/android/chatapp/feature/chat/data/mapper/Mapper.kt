@@ -9,9 +9,10 @@ import com.synaxis.android.chatapp.feature.chat.domain.model.Chat
 fun ChatDto.toDomain() = Chat(
     id = this.id,
     name = this.name,
+    avatarUrl = this.avatarUrl,
     lastActivity = this.lastActivity?.isoToMillis(),
     lastMessage = this.lastMessage,
-    chatMembers = this.chatMembers,
+    members = this.members,
     createdAt = this.createdAt.isoToMillis()
 )
 
@@ -20,7 +21,8 @@ fun Chat.toDto() = ChatDto(
     name = this.name,
     lastActivity = this.lastActivity?.toIso(),
     lastMessage = this.lastMessage,
-    chatMembers = this.chatMembers,
+    avatarUrl = this.avatarUrl,
+    members = this.members,
     createdAt = this.createdAt.toIso()
 )
 
@@ -29,7 +31,8 @@ fun Chat.toEntity() = ChatEntity(
     name = this.name,
     lastActivity = this.lastActivity,
     lastMessage = this.lastMessage,
-    chatMembers = this.chatMembers,
+    avatarUrl = this.avatarUrl,
+    members = this.members,
     createdAt = this.createdAt
 )
 
@@ -38,7 +41,8 @@ fun ChatDto.toEntity() = ChatEntity(
     name = this.name,
     lastActivity = this.lastActivity?.isoToMillis(),
     lastMessage = this.lastMessage,
-    chatMembers = this.chatMembers,
+    members = this.members,
+    avatarUrl = this.avatarUrl,
     createdAt = this.createdAt.isoToMillis()
 )
 
@@ -47,6 +51,7 @@ fun ChatEntity.toDomain() = Chat(
     name = this.name,
     lastActivity = this.lastActivity,
     lastMessage = this.lastMessage,
-    chatMembers = this.chatMembers,
+    avatarUrl = this.avatarUrl,
+    members = this.members,
     createdAt = this.createdAt
 )

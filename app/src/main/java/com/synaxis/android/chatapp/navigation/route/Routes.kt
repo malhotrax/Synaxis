@@ -1,10 +1,18 @@
 package com.synaxis.android.chatapp.navigation.route
 
 import androidx.navigation3.runtime.NavKey
+import com.synaxis.android.chatapp.feature.chat.domain.model.Chat
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class Routes: NavKey {
+
+    @Serializable
+    object  Splash: Routes()
+    @Serializable
+    data class  Conversation(
+        val chat: Chat
+    ): Routes()
 
     @Serializable
     object Friends: Routes()

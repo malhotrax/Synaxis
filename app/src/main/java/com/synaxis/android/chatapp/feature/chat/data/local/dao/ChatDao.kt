@@ -26,4 +26,6 @@ interface ChatDao {
     @Query("SELECT * FROM chat_table ORDER BY created_at DESC")
     fun getChats(): PagingSource<Int, ChatEntity>
 
+    @Query("SELECT * FROM chat_table WHERE id = :chatId")
+    suspend fun getChat(chatId: String) : ChatEntity?
 }

@@ -10,6 +10,7 @@ data class Message(
     val text: String,
     val senderId: String,
     val chatId: String,
+    val sent: Boolean = false,
     val status: MessageStatus = MessageStatus.PENDING,
     val createdAt: Long = Instant.now().toEpochMilli(),
     val updatedAt: Long? = null
