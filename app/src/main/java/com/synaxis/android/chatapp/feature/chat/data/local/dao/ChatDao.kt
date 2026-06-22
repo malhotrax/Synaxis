@@ -23,8 +23,8 @@ interface ChatDao {
     @Query("DELETE FROM chat_table WHERE id = :id")
     suspend fun deleteById(id: String)
 
-    @Query("SELECT * FROM chat_table ORDER BY created_at DESC")
-    fun getChats(): PagingSource<Int, ChatEntity>
+    @Query("SELECT * FROM chat_table WHERE :query = '' OR name LIKE '%' || :query || '%' ORDER BY last_activity DESC")
+    fun getChats(query: String): PagingSource<Int, ChatEntity>
 
     @Query("SELECT * FROM chat_table WHERE id = :chatId")
     suspend fun getChat(chatId: String) : ChatEntity?

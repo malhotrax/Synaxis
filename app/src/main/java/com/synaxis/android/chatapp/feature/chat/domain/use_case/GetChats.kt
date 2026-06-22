@@ -10,7 +10,7 @@ import javax.inject.Inject
 class GetChats @Inject constructor(
     private val chatRepository: ChatRepository
 ) {
-    operator fun invoke(): Flow<PagingData<Chat>> {
-        return chatRepository.getChats()
+    operator fun invoke(query: String): Flow<PagingData<Chat>> {
+        return chatRepository.getChats(query)
     }
 }

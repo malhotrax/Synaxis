@@ -70,7 +70,7 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getChats(): Flow<PagingData<Chat>> {
+    override fun getChats(query: String): Flow<PagingData<Chat>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
@@ -84,7 +84,7 @@ class ChatRepositoryImpl @Inject constructor(
                 appDatabase = appDatabase
             ),
             pagingSourceFactory = {
-                chatDao.getChats()
+                chatDao.getChats(query)
             }
         ).flow.map {
             it.map { chatEntity ->

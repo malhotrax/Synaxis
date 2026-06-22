@@ -85,7 +85,9 @@ internal fun ChatListScreen(
         ) {
             Header(
                 title = "Synaxis",
-                onSearch = {}
+                onSearch = {
+                    onEvent(ChatListEvent.SearchQueryChanged(it))
+                }
             )
             Box(
                 modifier = Modifier

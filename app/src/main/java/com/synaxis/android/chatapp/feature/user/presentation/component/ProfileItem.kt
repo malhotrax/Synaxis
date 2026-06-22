@@ -47,7 +47,7 @@ fun ProfileItem(
                 .shadow(5.dp, RoundedCornerShape(25.dp))
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainer)
-                .border(width = 0.5.dp, color = MaterialTheme.colorScheme.surfaceContainerHighest)
+                .border(width = 0.5.dp, color = MaterialTheme.colorScheme.surfaceContainerHighest, shape = RoundedCornerShape(25.dp))
                 .clickable(onClick = action)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
