@@ -112,7 +112,7 @@ internal fun ChatListScreen(
                                 ChatItem(
                                     modifier = Modifier,
                                     avatarUrl = it.avatarUrl,
-                                    name = it.name!!,
+                                    name = it.name ?: "Unknown",
                                     lastMessage = it.lastMessage,
                                     lastActivity = it.lastActivity?.toIso(),
                                     navigateToConversation = {

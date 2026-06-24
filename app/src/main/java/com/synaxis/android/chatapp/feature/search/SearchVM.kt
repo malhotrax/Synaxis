@@ -34,11 +34,12 @@ class SearchVM @Inject constructor(
                 .distinctUntilChanged()
                 .debounce(400)
                 .collectLatest { query ->
-                    if(query.isBlank())  return@collectLatest
+                    if (query.isBlank()) return@collectLatest
                     search(query)
                 }
         }
     }
+
     fun onEvent(event: SearchEvent) {
         when (event) {
             is SearchEvent.QueryChanged -> onQueryChanged(event.query)
@@ -53,16 +54,22 @@ class SearchVM @Inject constructor(
     }
 
     private suspend fun search(query: String) {
-            _state.update { it.copy(isLoading = true) }
+        _state.update { it.copy(isLoading = true) }
         when (val result = userUseCase.searchUser(query)) {
-                ApiResult.Empty -> _state.update { it.copy(isLoading = false, users = emptyList()) }
-                is ApiResult.Error -> _state.update { it.copy(errorMessage = result.message, isLoading = false) }
-                is ApiResult.Success -> {
-                    val users = result.data.users
-                    _state.update { it.copy(users = users,isLoading = false) }
-                }
+            ApiResult.Empty -> _state.update { it.copy(isLoading = false, users = emptyList()) }
+            is ApiResult.Error -> _state.update {
+                it.copy(
+                    errorMessage = result.message,
+                    isLoading = false
+                )
+            }
+
+            is ApiResult.Success -> {
+                val users = result.data.users
+                _state.update { it.copy(users = users, isLoading = false) }
             }
         }
+    }
 
 
     private fun onSendMessage(userId: String) {}

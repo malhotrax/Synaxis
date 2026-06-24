@@ -5,5 +5,5 @@ sealed class SearchEvent {
     data class SendRequest(val userId: String) : SearchEvent()
     data class SendMessage(val userId: String) : SearchEvent()
 
-    object ClearMessages: SearchEvent()
+    object ClearMessages : SearchEvent()
 }

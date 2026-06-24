@@ -7,6 +7,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,6 +20,7 @@ import com.synaxis.android.chatapp.core.common.util.NavigationActionItem
 import com.synaxis.android.chatapp.core.common.util.PrimaryTabs
 import com.synaxis.android.chatapp.feature.auth.presentation.login.LoginScreen
 import com.synaxis.android.chatapp.feature.auth.presentation.signup.SignUpScreen
+import com.synaxis.android.chatapp.feature.chat.domain.model.Chat
 import com.synaxis.android.chatapp.feature.chat.presentation.ChatListScreen
 import com.synaxis.android.chatapp.feature.friends.presentation.FriendsScreen
 import com.synaxis.android.chatapp.feature.message.presentation.ConversationScreen
@@ -36,22 +38,25 @@ import com.synaxis.android.chatapp.ui.component.BottomNavigation
 fun App(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<SplashVM>()
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     val backStack = rememberNavBackStack(Routes.Splash)
-
-    LaunchedEffect(state.isLoggedIn, state.isLoading) {
-        if (state.isLoading) return@LaunchedEffect
-        backStack.clear()
-        if (state.isLoggedIn) {
-            backStack.add(Routes.Chats)
-        } else {
-            backStack.add(Routes.Login)
-        }
-    }
-
     val primaryTabs = PrimaryTabs.entries
     val currentRoute = backStack.last()
     val showBottomNav = !state.isLoading && state.isLoggedIn &&
             primaryTabs.any { it.route == currentRoute }
+
+    LaunchedEffect(state.isLoggedIn , state.isLoading) {
+        if(state.isLoading) return@LaunchedEffect
+
+        if(currentRoute is Routes.Splash && state.isLoggedIn) {
+            backStack.removeLastOrNull()
+            backStack.add(Routes.Chats)
+        }
+        else if(!state.isLoggedIn) {
+            backStack.clear()
+            backStack.add(Routes.Login)
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),

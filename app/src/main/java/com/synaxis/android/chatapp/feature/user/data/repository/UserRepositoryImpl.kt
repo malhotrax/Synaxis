@@ -11,7 +11,10 @@ import com.synaxis.android.chatapp.feature.user.data.mapper.toDomain
 import com.synaxis.android.chatapp.feature.user.data.remote.UserRemoteDatasource
 import com.synaxis.android.chatapp.feature.user.domain.model.GetUserResponse
 import com.synaxis.android.chatapp.feature.user.domain.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -35,7 +38,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun deleteAccount(): ApiResult<MessageResponse> {
         val userId = userId() ?: return ApiResult.error("No id found")
         val result = remoteDatasource.deleteAccount()
-        if(result is ApiResult.Success) {
+        if (result is ApiResult.Success) {
             userDao.deleteAccount(userId)
             sessionDatasource.clear()
         }
@@ -46,8 +49,8 @@ class UserRepositoryImpl @Inject constructor(
         val userId = userId() ?: return ApiResult.error("No user id found")
         return appDatabase.withTransaction {
             val result = remoteDatasource.updateUsername(username)
-            if(result is ApiResult.Success) {
-                userDao.updateUsername(username,userId)
+            if (result is ApiResult.Success) {
+                userDao.updateUsername(username, userId)
             }
             result
         }
@@ -57,20 +60,18 @@ class UserRepositoryImpl @Inject constructor(
         val userId = userId() ?: return ApiResult.error("No user id found")
         return appDatabase.withTransaction {
             val result = remoteDatasource.updateFullName(fullName)
-            if(result is ApiResult.Success) {
-                userDao.updateFullName(fullName,userId)
+            if (result is ApiResult.Success) {
+                userDao.updateFullName(fullName, userId)
             }
             result
         }
     }
 
-    override suspend fun logout(): ApiResult<MessageResponse> {
-        val result = remoteDatasource.logout()
-        if(result is ApiResult.Success) {
+    override suspend fun logout() {
+        withContext(Dispatchers.IO) {
             sessionDatasource.clear()
             appDatabase.clearAllData()
         }
-        return result
     }
 
     override suspend fun updateAvatarUrl(avatarUrl: String): ApiResult<MessageResponse> {

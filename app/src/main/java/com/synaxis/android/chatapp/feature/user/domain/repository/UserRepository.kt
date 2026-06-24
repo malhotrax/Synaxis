@@ -10,7 +10,7 @@ interface UserRepository {
     suspend fun deleteAccount(): ApiResult<MessageResponse>
     suspend fun updateUsername(username: String): ApiResult<MessageResponse>
     suspend fun updateFullName(fullName: String): ApiResult<MessageResponse>
-    suspend fun logout() : ApiResult<MessageResponse>
+    suspend fun logout()
     suspend fun updateAvatarUrl(avatarUrl: String): ApiResult<MessageResponse>
     suspend fun searchUser(query: String, limit: Int = 20): ApiResult<GetUserResponse>
 

@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -143,7 +144,7 @@ private fun TitleAndSearchIcon(
 
 
 @Composable
-private fun SearchBar(
+fun SearchBar(
     modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
@@ -164,6 +165,7 @@ private fun SearchBar(
         },
         modifier = modifier
             .fillMaxWidth()
+            .padding(8.dp)
             .shadow(5.dp, RoundedCornerShape(25.dp))
             .clip(RoundedCornerShape(25.dp))
             .background(
@@ -199,5 +201,15 @@ private fun SearchBar(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         },
+    )
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun HeaderPreview() {
+    Header(
+        title = "Find people",
+        onSearch = {}
     )
 }

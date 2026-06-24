@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -90,6 +92,7 @@ internal fun ConversationScreen(
 ) {
     val refreshState = messages.loadState.refresh
     val appendState = messages.loadState.append
+    val listState = rememberLazyListState()
 
     LaunchedEffect(refreshState, appendState) {
         if(refreshState is LoadState.Error) {
@@ -101,10 +104,14 @@ internal fun ConversationScreen(
             snackBarHostState.showSnackbar(appendState.error.message ?: "Something went wrong")
         }
     }
+    LaunchedEffect(refreshState) {
+        if (refreshState is LoadState.NotLoading) {
+            listState.scrollToItem(0)
+        }
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
-            .imePadding()
     ) {
         ConversationHeader(
             modifier = Modifier,
@@ -133,7 +140,8 @@ internal fun ConversationScreen(
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(),
-                reverseLayout = true
+                reverseLayout = true,
+                state = listState
             ) {
                 items(messages.itemCount, key = messages.itemKey { it.id }) { index ->
                     val message = messages[index]
@@ -154,6 +162,7 @@ internal fun ConversationScreen(
             )
         }
         MessageBox(
+            modifier = Modifier.imePadding(),
             value = state.message,
             onValueChange = {
                 onEvent(ConversationEvent.MessageChanged(it))

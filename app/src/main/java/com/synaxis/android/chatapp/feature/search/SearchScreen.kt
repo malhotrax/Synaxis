@@ -15,9 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.PersonAdd
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,9 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,7 +42,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.synaxis.android.chatapp.core.common.user.GetSearchUser
+import com.synaxis.android.chatapp.ui.component.Header
 import com.synaxis.android.chatapp.ui.component.HintText
+import com.synaxis.android.chatapp.ui.component.SearchBar
 
 @Composable
 fun SearchScreen(
@@ -64,17 +64,32 @@ internal fun SearchScreen(
     onBack: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
-
+    val focusManager = LocalFocusManager.current
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
-    Surface(modifier = modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            SearchHeader(
-                query = state.query,
-                onQueryChange = { onEvent(SearchEvent.QueryChanged(it)) },
-                onBack = onBack,
-                focusRequester = focusRequester
+    Surface(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
+            Header(
+                title = "Find people",
+                onSearch = { onEvent(SearchEvent.QueryChanged(it)) }
             )
+//            SearchBar(
+//                query = state.query,
+//                onQueryChange = { onEvent(SearchEvent.QueryChanged(it)) },
+//                deactivateSearch = {
+//                    onEvent(SearchEvent.QueryChanged(""))
+//                    focusManager.clearFocus()
+//                },
+//                focusRequester = focusRequester,
+//                onSearch = {}
+//            )
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -82,9 +97,11 @@ internal fun SearchScreen(
                 when {
                     state.isLoading -> CircularProgressIndicator()
                     state.errorMessage != null -> {
-                        Toast.makeText(LocalContext.current,state.errorMessage, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(LocalContext.current, state.errorMessage, Toast.LENGTH_SHORT)
+                            .show()
                         onEvent(SearchEvent.ClearMessages)
                     }
+
                     state.query.isBlank() -> HintText("Search for people to add")
                     state.users.isEmpty() -> HintText("No results for \"${state.query}\"")
                     else -> UserList(
@@ -96,52 +113,6 @@ internal fun SearchScreen(
     }
 }
 
-@Composable
-private fun SearchHeader(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onBack: () -> Unit,
-    focusRequester: FocusRequester
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
-        }
-        BasicTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            modifier = Modifier
-                .weight(1f)
-                .focusRequester(focusRequester),
-            singleLine = true,
-            textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
-            decorationBox = { inner ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerLow)
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
-                ) {
-                    if (query.isEmpty()) {
-                        Text(
-                            text = "Search people...",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    inner()
-                }
-            }
-        )
-    }
-}
 
 @Composable
 private fun UserList(

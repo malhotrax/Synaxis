@@ -1,5 +1,6 @@
 package com.synaxis.android.chatapp.feature.user.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synaxis.android.chatapp.core.common.resource.ApiResult
