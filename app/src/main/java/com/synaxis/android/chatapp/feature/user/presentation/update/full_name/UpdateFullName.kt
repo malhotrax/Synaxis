@@ -151,11 +151,14 @@ internal fun UpdateFullNameScreen(
                     .height(50.dp)
                     .shadow(5.dp, RoundedCornerShape(30.dp))
                     .clip(RoundedCornerShape(30.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .background(MaterialTheme.colorScheme.primary)
                     .clickable(onClick = { event(UpdateFullNameEvent.UpdateName) }),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Save")
+                Text(
+                    text = "Save",
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
         SwipeableSnackBar(

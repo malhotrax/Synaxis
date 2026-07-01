@@ -27,9 +27,14 @@ fun MessageItem(
 ) {
     val alignment = if (sent) Alignment.CenterEnd else Alignment.CenterStart
     val containerColor =
-        if (sent) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.primaryContainer
+        if (sent) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.primary
     val textColor =
-        if (sent) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary
+        if (sent) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onPrimary
+    val shape = if(sent) RoundedCornerShape(
+        topStart = 0.dp, bottomEnd = 0.dp,
+        topEnd = 15.dp,
+        bottomStart = 15.dp
+    ) else RoundedCornerShape(topStart = 15.dp, bottomEnd = 15.dp, )
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -38,7 +43,7 @@ fun MessageItem(
     ) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(15.dp))
+                .clip(shape)
                 .background(containerColor)
                 .padding(8.dp),
             verticalArrangement = Arrangement.Center,

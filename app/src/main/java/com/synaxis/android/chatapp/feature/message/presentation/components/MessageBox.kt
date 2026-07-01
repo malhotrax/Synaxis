@@ -69,14 +69,14 @@ fun MessageBox(
                 .padding(end = 6.dp)
                 .size(55.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(MaterialTheme.colorScheme.primary)
                 .clickable(onClick = sendMessage),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.Send,
                 contentDescription = "Send Message",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier.size(35.dp)
             )
         }

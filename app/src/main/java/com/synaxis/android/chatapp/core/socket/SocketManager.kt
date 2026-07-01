@@ -1,12 +1,10 @@
 package com.synaxis.android.chatapp.core.socket
 
-import android.content.Context
 import android.util.Log
 import com.synaxis.android.chatapp.feature.message.data.remote.dto.MessageDto
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.synaxis.android.chatapp.feature.message.data.remote.dto.NotificationMessageDto
 import io.socket.client.IO
 import io.socket.client.Socket
-import io.socket.emitter.Emitter
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.time.Instant
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -68,12 +65,14 @@ class SocketManager @Inject constructor(
         when (e) {
             is SocketOutboundEvent.DeleteMessage -> {
                 val payload = e.messageId
-                socket.emit(SocketEvents.DELETE_MESSAGE,payload )
+                socket.emit(SocketEvents.DELETE_MESSAGE, payload)
             }
+
             is SocketOutboundEvent.SendMessage -> {
                 val payload = json.encodeToString<MessageDto>(e.messageDto)
-                socket.emit(SocketEvents.SEND_MESSAGE,payload)
+                socket.emit(SocketEvents.SEND_MESSAGE, payload)
             }
+
             is SocketOutboundEvent.UpdateMessage -> {
                 val updateMessageDto = UpdateMessageDto(e.messageId, e.content)
                 val payload = json.encodeToString<UpdateMessageDto>(updateMessageDto)
@@ -81,8 +80,9 @@ class SocketManager @Inject constructor(
             }
 
             is SocketOutboundEvent.JoinChat -> {
-                socket.emit(SocketEvents.JOIN_ROOM,e.chatId)
+                socket.emit(SocketEvents.JOIN_ROOM, e.chatId)
             }
+
             is SocketOutboundEvent.LeaveChat -> {
                 socket.emit(SocketEvents.LEAVE_ROOM, e.chatId)
             }
@@ -104,23 +104,37 @@ class SocketManager @Inject constructor(
             _connectionState.value = ConnectionState.Error(error)
         }
         registerEvent(SocketEvents.MESSAGE_RECEIVED) {
-            json.decodeFromString<MessageDto>(it).let (SocketInboundEvent::MessageReceived)
+            Log.d("SocketManager", "Message received")
+            json.decodeFromString<MessageDto>(it).let(SocketInboundEvent::MessageReceived)
         }
         registerEvent(SocketEvents.MESSAGE_DELETED) {
-            json.decodeFromString<DeleteMessageDto>(it).let { SocketInboundEvent.MessageDeleted(it.id) }
+            Log.d("SocketManager", "Message deleted")
+            json.decodeFromString<DeleteMessageDto>(it)
+                .let { SocketInboundEvent.MessageDeleted(it.id) }
         }
         registerEvent(SocketEvents.MESSAGE_UPDATED) {
-            json.decodeFromString<UpdateMessageDto>(it).let { dto -> SocketInboundEvent.MessageUpdated(messageId = dto.id, content = dto.content, updatedAt = dto.updatedAt) }
+            Log.d("SocketManager", "Message updated")
+            json.decodeFromString<UpdateMessageDto>(it).let { dto ->
+                SocketInboundEvent.MessageUpdated(
+                    messageId = dto.id,
+                    content = dto.content,
+                    updatedAt = dto.updatedAt
+                )
+            }
+        }
+        registerEvent(SocketEvents.NOTIFICATION_NEW_MESSAGE) {
+            Log.d("SocketManager", "New message notification received")
+            json.decodeFromString<NotificationMessageDto>(it).let(SocketInboundEvent::NotificationNewMessage)
         }
     }
 
     fun Socket.registerEvent(eventName: String, parse: (String) -> SocketInboundEvent) {
         on(eventName) { args ->
-           try {
-               _socketInboundEvents.tryEmit(parse(args.first().toString()))
-           }catch (e: Exception)  {
-               Log.e("SocketManager","Parse error $eventName : ${e.message}")
-           }
+            try {
+                _socketInboundEvents.tryEmit(parse(args.first().toString()))
+            } catch (e: Exception) {
+                Log.e("SocketManager", "Parse error $eventName : ${e.message}")
+            }
         }
     }
 
@@ -131,7 +145,6 @@ class SocketManager @Inject constructor(
     }
 
 }
-
 
 
 @Serializable

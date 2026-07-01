@@ -87,7 +87,7 @@ fun ConversationHeader(
             }
         }
         HorizontalDivider(
-            thickness = 2.dp,
+            thickness = 1.dp,
             color = MaterialTheme.colorScheme.surfaceContainerHighest,
         )
     }

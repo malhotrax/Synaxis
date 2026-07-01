@@ -28,4 +28,11 @@ interface ChatDao {
 
     @Query("SELECT * FROM chat_table WHERE id = :chatId")
     suspend fun getChat(chatId: String) : ChatEntity?
+
+    @Query("UPDATE chat_table SET last_activity = :lasActivity WHERE id = :id")
+    suspend fun updateLastActivity(id: String, lasActivity: Long)
+
+
+    @Query("UPDATE chat_table SET last_message = :lastMessage WHERE id = :id")
+    suspend fun updateLastMessage(id: String, lastMessage: String)
 }

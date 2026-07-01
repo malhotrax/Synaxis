@@ -1,6 +1,7 @@
 package com.synaxis.android.chatapp.feature.message.presentation
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -9,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -31,6 +34,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.synaxis.android.chatapp.core.common.util.DateTimeUtil.toChatTime
 import com.synaxis.android.chatapp.core.common.util.DateTimeUtil.toIso
 import com.synaxis.android.chatapp.feature.chat.domain.model.Chat
 import com.synaxis.android.chatapp.feature.message.domain.model.Message
@@ -112,11 +116,11 @@ internal fun ConversationScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+
     ) {
         ConversationHeader(
             modifier = Modifier,
             name = chat.name ?: "Unknown",
-            lastActivity = chat.lastActivity?.toIso(),
             avatarUrl = state.avatarUrl,
             navigateBack = { onEvent(ConversationEvent.NavigateBack) }
         )
@@ -124,6 +128,7 @@ internal fun ConversationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 8.dp),
         ) {
             if(refreshState is LoadState.Loading) {
@@ -141,14 +146,13 @@ internal fun ConversationScreen(
                     .fillMaxHeight()
                     .fillMaxWidth(),
                 reverseLayout = true,
-                state = listState
             ) {
                 items(messages.itemCount, key = messages.itemKey { it.id }) { index ->
                     val message = messages[index]
                     message?.let {
                         MessageItem(
                             message = it.text,
-                            at = it.createdAt.toIso(),
+                            at = it.createdAt.toChatTime(),
                             sent = it.senderId == state.userId
                         )
                     }

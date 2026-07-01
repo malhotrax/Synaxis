@@ -90,8 +90,10 @@ class ConversationVM @AssistedInject constructor(
     }
 
     private fun onSendMessage() {
+        val message = _state.value.message
+        if (message.isBlank()) return
         viewModelScope.launch {
-            when (val result = messageUseCase.sendMessage(content = _state.value.message.trim(), chatId = chat.id)) {
+            when (val result = messageUseCase.sendMessage(content = message.trim(), chatId = chat.id)) {
                 ApiResult.Empty -> sendUiEvent(ConversationUiEvent.ShowSnackBar(message = "Something went wrong"))
                 is ApiResult.Error -> sendUiEvent(
                     ConversationUiEvent.ShowSnackBar(
@@ -99,7 +101,9 @@ class ConversationVM @AssistedInject constructor(
                     )
                 )
 
-                is ApiResult.Success -> Unit
+                is ApiResult.Success -> {
+                    _state.update { it.copy(message =  "") }
+                }
             }
         }
     }

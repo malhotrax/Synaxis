@@ -1,6 +1,5 @@
 package com.synaxis.android.chatapp.feature.chat.data.repository
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -43,16 +42,16 @@ class ChatRepositoryImpl @Inject constructor(
     init {
         observeAuthAndConnect()
     }
+
     private fun observeAuthAndConnect() {
-        sessionDatasource.accessToken()
-            .distinctUntilChanged()
-            .onEach { token ->
+        sessionDatasource.accessToken().distinctUntilChanged().onEach { token ->
                 if (token != null) socketManager.connect(token)
                 else socketManager.disconnect()
             }.launchIn(appScope)
     }
 
     override suspend fun createChat(userId: String): ApiResult<Chat> {
+        // if there is already a chat then return that chat
         val otherUser = ChatMember(userId)
         val members = listOf(otherUser)
         val chat = Chat(members = members)
@@ -73,20 +72,15 @@ class ChatRepositoryImpl @Inject constructor(
     override fun getChats(query: String): Flow<PagingData<Chat>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false,
-                prefetchDistance = 5
-            ),
-            remoteMediator = ChatRemoteMediator(
+                pageSize = 10, enablePlaceholders = false, prefetchDistance = 5
+            ), remoteMediator = ChatRemoteMediator(
                 chatRemoteDatasource = chatRemoteDatasource,
                 chatDao = chatDao,
                 remoteKeysDao = remoteKeysDao,
                 appDatabase = appDatabase
-            ),
-            pagingSourceFactory = {
+            ), pagingSourceFactory = {
                 chatDao.getChats(query)
-            }
-        ).flow.map {
+            }).flow.map {
             it.map { chatEntity ->
                 chatEntity.toDomain()
             }
@@ -96,8 +90,7 @@ class ChatRepositoryImpl @Inject constructor(
     override suspend fun getChat(chatId: String): ApiResult<Chat> {
         return try {
             val chat = chatDao.getChat(chatId) ?: return ApiResult.error(
-                "No chat found",
-                errorType = ErrorType.NOT_FOUND
+                "No chat found", errorType = ErrorType.NOT_FOUND
             )
             ApiResult.success(chat.toDomain())
         } catch (e: Exception) {

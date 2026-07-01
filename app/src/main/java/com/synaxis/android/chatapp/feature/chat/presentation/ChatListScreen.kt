@@ -27,6 +27,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.synaxis.android.chatapp.core.common.util.DateTimeUtil.toChatTime
 import com.synaxis.android.chatapp.core.common.util.DateTimeUtil.toIso
 import com.synaxis.android.chatapp.feature.chat.domain.model.Chat
 import com.synaxis.android.chatapp.feature.chat.presentation.components.ChatItem
@@ -114,7 +115,7 @@ internal fun ChatListScreen(
                                     avatarUrl = it.avatarUrl,
                                     name = it.name ?: "Unknown",
                                     lastMessage = it.lastMessage,
-                                    lastActivity = it.lastActivity?.toIso(),
+                                    lastActivity = it.lastActivity?.toChatTime(),
                                     navigateToConversation = {
                                         onEvent(ChatListEvent.NavigateToConversation(it))
                                     }
